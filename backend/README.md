@@ -15,6 +15,12 @@ Express + raw SQL (`pg`) + Neon PostgreSQL. The mobile app never sees the databa
 
 While `DATABASE_URL` is the placeholder, `src/config/db.js` refuses to create a connection.
 
+## API
+
+`npm start` starts the authenticated API on `PORT`. The API uses short-lived JWT access tokens and one-time rotated refresh tokens stored as hashes in PostgreSQL. The mobile client must be configured with the API origin only; it must never receive `DATABASE_URL`.
+
+Implemented route groups include `/api/auth`, `/api/dashboard`, `/api/projects`, `/api/tasks`, `/api/invoices`, `/api/payments`, `/api/notifications`, `/api/support/tickets`, `/api/files`, and project messages/updates. Client reads are scoped to the authenticated `client_id`; team task writes are limited to assigned/project-member tasks; admin-only verification and publishing are enforced in the API and database constraints.
+
 ## Database migrations
 
 Plain SQL files in `migrations/`, applied in order by `scripts/migrate.js`. They are forward-only, with no down migrations and no drops.

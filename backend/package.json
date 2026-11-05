@@ -10,10 +10,15 @@
   "scripts": {
     "migrate:plan": "node scripts/migrate.js plan",
     "migrate:status": "node scripts/migrate.js status",
-    "migrate": "node scripts/migrate.js up"
+    "migrate": "node scripts/migrate.js up",
+    "start": "node src/server.js"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "dotenv": "^18.0.9",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.23.1"
   }
 }

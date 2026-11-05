@@ -9,6 +9,7 @@ import { Platform } from 'react-native';
 import { DEMO_ACCOUNTS } from '@/data/demo';
 import type { Role, User } from '@/data/types';
 import { useStore } from './DemoStore';
+import * as api from '@/lib/api';
 
 const STORAGE_KEY = 'vos.session.role';
 
@@ -17,7 +18,7 @@ type SessionValue = {
   user: User | null;
   role: Role | null;
   signInAs: (role: Role) => void;
-  signInWithPassword: (email: string, password: string) => { ok: true } | { ok: false; error: string };
+  signInWithPassword: (email: string, password: string) => Promise<{ ok: true } | { ok: false; error: string }>;
   signOut: () => void;
 };
 
@@ -33,6 +34,7 @@ function previewRole(): Role | null {
 export function SessionProvider({ children }: { children: ReactNode }) {
   const { state } = useStore();
   const [role, setRole] = useState<Role | null>(previewRole);
+  const [apiUser, setApiUser] = useState<User | null>(null);
   const [ready, setReady] = useState(previewRole() !== null);
 
   useEffect(() => {
@@ -51,7 +53,15 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signInWithPassword = useCallback(
-    (email: string, password: string) => {
+    async (email: string, password: string) => {
+      if (api.API_BASE_URL) {
+        try {
+          const result = await api.login(email.trim(), password);
+          setApiUser({ id: result.user.id, role: result.user.role, name: result.user.name, email: result.user.email, phone: result.user.phone || undefined, jobTitle: result.user.jobTitle || undefined, clientId: result.user.clientId || undefined, status: 'active', joinedOn: new Date().toISOString() });
+          signInAs(result.user.role);
+          return { ok: true as const };
+        } catch (err) { return { ok: false as const, error: err instanceof Error ? err.message : 'Unable to sign in.' }; }
+      }
       const user = state.users.find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
       if (!user || Object.values(DEMO_ACCOUNTS).indexOf(user.id as never) === -1 || password !== 'demo1234') {
         return { ok: false as const, error: 'Email or password is incorrect.' };
@@ -64,11 +74,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   );
 
   const signOut = useCallback(() => {
+    if (api.API_BASE_URL) void api.logout();
+    setApiUser(null);
     setRole(null);
     AsyncStorage.removeItem(STORAGE_KEY).catch(() => {});
   }, []);
 
-  const user = role ? state.users.find((u) => u.id === DEMO_ACCOUNTS[role]) ?? null : null;
+  const user = apiUser ?? (role ? state.users.find((u) => u.id === DEMO_ACCOUNTS[role]) ?? null : null);
 
   const value = useMemo(
     () => ({ ready, user, role, signInAs, signInWithPassword, signOut }),

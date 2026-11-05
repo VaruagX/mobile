@@ -29,12 +29,12 @@ export default function Login() {
   const [error, setError] = useState<string | undefined>();
   const [busy, setBusy] = useState(false);
 
-  const submit = () => {
+  const submit = async () => {
     setError(undefined);
     if (!email.includes('@')) return setError('Enter the email Varuag Labs registered for you.');
     if (!password) return setError('Enter your password.');
     setBusy(true);
-    const res = signInWithPassword(email, password);
+    const res = await signInWithPassword(email, password);
     setBusy(false);
     if (!res.ok) return setError(res.error);
     router.replace('/');

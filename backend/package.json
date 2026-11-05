@@ -1,0 +1,19 @@
+{
+  "name": "varuag-os-backend",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Varuag Labs OS API — Express, raw SQL with pg, Neon PostgreSQL",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "migrate:plan": "node scripts/migrate.js plan",
+    "migrate:status": "node scripts/migrate.js status",
+    "migrate": "node scripts/migrate.js up"
+  },
+  "dependencies": {
+    "dotenv": "^18.0.9",
+    "pg": "^8.23.1"
+  }
+}

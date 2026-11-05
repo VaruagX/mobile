@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "Varuag OS",
+    "slug": "varuag-os",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "in.varuaglabs.os"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#08090d",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "in.varuaglabs.os"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-image",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#08090d",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "dark": {
+            "backgroundColor": "#08090d"
+          }
+        }
+      ],
+      "expo-web-browser"
+    ],
+    "scheme": "varuagos",
+    "backgroundColor": "#08090d",
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}

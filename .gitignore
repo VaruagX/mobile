@@ -1,0 +1,42 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+.expo/
+dist/
+coverage/
+
+# OS / editor
+.DS_Store
+*.log
+
+# Database dumps can contain password hashes and client data
+*.dump
+*.sql.gz
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Expo and build outputs
+.expo/
+**/.expo/
+dist/
+**/dist/
+coverage/
+
+# Sensitive database backups
+*.dump
+*.sql.gz
+*.backup
+
+# OS files
+.DS_Store
+*.log

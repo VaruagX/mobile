@@ -1,4 +1,4 @@
-/** Domain types. They mirror the backend schema (backend/migrations/001-005). */
+/** Domain types used by the mobile app and its in-memory demo data. */
 
 export type Role = 'admin' | 'team' | 'client';
 export type AccountStatus = 'active' | 'suspended' | 'disabled';

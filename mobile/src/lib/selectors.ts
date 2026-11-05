@@ -1,7 +1,5 @@
 /**
- * Derived values. The progress and balance rules match the backend's SQL views
- * (milestone_progress, project_progress, invoice_balances) so numbers stay identical
- * once the API is connected.
+ * Derived progress and balance values for the in-memory demo data.
  */
 import type { DemoState, Invoice, Milestone, Project, Task } from '@/data/types';
 import { daysFromToday } from './format';

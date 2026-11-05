@@ -29,13 +29,11 @@ src/
   components/          design system: Txt, Button, Card, Chips, Form, Sheet, Hero, Leadership, TabBar…
   features/            role-aware cards, list screens and form sheets
   data/                types, website content (site.ts), demo data (demo.ts)
-  lib/                 progress/balance rules (same as the backend SQL views), formatting
-  store/               in-memory demo store and session (replaced by API calls at integration)
+  lib/                 progress/balance rules and formatting
+  store/               in-memory demo store and local demo session
 assets/brand, assets/team   original website logo and leadership photos (unchanged copies)
 ```
 
-## Integration notes
+## Data
 
-- Each `actions.*` in `src/store/DemoStore.tsx` maps 1:1 to an API endpoint to build.
-- `src/lib/selectors.ts` mirrors `backend/migrations/002` and `004` views; once the API returns `progress_percent` and `balance_due`, the screens can read those directly.
-- The app never holds a database connection string; it will only talk to the backend over HTTPS.
+All screens and form actions use the in-memory demo store. Changes reset when the app reloads. The backend is currently a database-free placeholder and is not used by this UI build.

@@ -14,7 +14,7 @@ export type TabMeta = Record<string, { label: string; icon: LucideIcon; badge?: 
  * Floating glass pill tab bar. The active tab gets the website nav's gold dot
  * (.nav-link[data-active]::after).
  */
-export function FloatingTabBar({ state, emitter, navigateToTab, meta }: BottomTabBarProps & { meta: TabMeta }) {
+export function FloatingTabBar({ state, navigation, meta }: BottomTabBarProps & { meta: TabMeta }) {
   const c = useColors();
   const { name } = useTheme();
   const insets = useSafeAreaInsets();
@@ -47,8 +47,8 @@ export function FloatingTabBar({ state, emitter, navigateToTab, meta }: BottomTa
           const Icon = m.icon;
           const onPress = () => {
             tap();
-            const event = emitter.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-            if (!focused && !event.defaultPrevented) navigateToTab(route.key);
+            const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+            if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
           };
           return (
             <Pressable

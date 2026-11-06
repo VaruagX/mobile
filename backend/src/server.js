@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const port = Number.parseInt(process.env.PORT || '5000', 10);
+const port = Number.parseInt(process.env.PORT || '5001', 10);
 const allowedOrigins = new Set((process.env.CORS_ORIGINS || '').split(',').map((value) => value.trim()).filter(Boolean));
 
 app.disable('x-powered-by');

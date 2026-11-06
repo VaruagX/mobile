@@ -11,7 +11,7 @@ import {
   type KeyboardTypeOptions,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Eye, EyeOff, Paperclip, X } from 'lucide-react-native';
+import { Eye, EyeOff, Paperclip, X, type LucideIcon } from 'lucide-react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { useColors } from '@/theme/ThemeProvider';
 import { fonts, radius, space } from '@/theme/tokens';
@@ -36,6 +36,7 @@ export function Field({
   maxLength,
   autoComplete,
   prefix,
+  suffix,
 }: {
   label: string;
   hint?: string;
@@ -50,6 +51,7 @@ export function Field({
   maxLength?: number;
   autoComplete?: 'email' | 'password' | 'name' | 'tel' | 'off';
   prefix?: string;
+  suffix?: string;
 }) {
   const c = useColors();
   const [focused, setFocused] = useState(false);
@@ -110,6 +112,11 @@ export function Field({
             outlineStyle: 'none',
           } as object}
         />
+        {suffix ? (
+          <Txt variant="body" tone="muted" style={{ marginLeft: 6 }}>
+            {suffix}
+          </Txt>
+        ) : null}
         {secure ? (
           <Pressable accessibilityRole="button" accessibilityLabel={hidden ? 'Show password' : 'Hide password'} onPress={() => setHidden((h) => !h)} hitSlop={10}>
             {hidden ? <Eye size={18} color={c.muted} /> : <EyeOff size={18} color={c.muted} />}
@@ -327,6 +334,8 @@ export function Sheet({
   onClose,
   eyebrow,
   title,
+  subtitle,
+  icon: HeaderIcon,
   children,
   footer,
 }: {
@@ -334,6 +343,9 @@ export function Sheet({
   onClose: () => void;
   eyebrow?: string;
   title: string;
+  /** Optional supporting line under the title (enables the compact icon header). */
+  subtitle?: string;
+  icon?: LucideIcon;
   children: ReactNode;
   footer?: ReactNode;
 }) {
@@ -360,11 +372,21 @@ export function Sheet({
               <View style={{ width: 40, height: 4, borderRadius: 2, backgroundColor: c.lineStrong }} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12, paddingHorizontal: space.gutter, paddingTop: 14, paddingBottom: 6 }}>
+              {HeaderIcon ? (
+                <View style={{ width: 44, height: 44, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: c.goldTint, borderWidth: 1, borderColor: c.goldBorder }}>
+                  <HeaderIcon size={20} color={c.gold} strokeWidth={1.8} />
+                </View>
+              ) : null}
               <View style={{ flex: 1 }}>
                 {eyebrow ? <Eyebrow tone="gold">{eyebrow}</Eyebrow> : null}
                 <Txt variant="h3" style={{ marginTop: eyebrow ? 10 : 0 }} accessibilityRole="header">
                   {title}
                 </Txt>
+                {subtitle ? (
+                  <Txt variant="bodySm" tone="muted" style={{ marginTop: 2 }}>
+                    {subtitle}
+                  </Txt>
+                ) : null}
               </View>
               <IconButton icon={X} label="Close" onPress={onClose} size={40} />
             </View>

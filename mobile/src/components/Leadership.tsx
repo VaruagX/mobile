@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { FlatList, Linking, Pressable, View, type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
+import { Linking, Pressable, View } from 'react-native';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { altFor, leadership, type Leader } from '@/data/site';
@@ -12,20 +11,17 @@ import { Reveal } from './Motion';
 import { Serif, Txt } from './Txt';
 import { tap } from '@/lib/haptics';
 
-const CARD_W = 264;
-const GAP = 14;
+const GAP = 12;
 
 /**
  * Website About → Leadership section ("band-paper": stays light in both themes).
  * Original photographs, names, roles, bios and LinkedIn links, unchanged.
+ * Two-column grid; the host screen's ScrollView provides the vertical scrolling.
  */
 export function Leadership({ index = '04' }: { index?: string }) {
   const { paper } = useTheme();
-  const [page, setPage] = useState(0);
-  const onScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const i = Math.round(e.nativeEvent.contentOffset.x / (CARD_W + GAP));
-    if (i !== page) setPage(Math.max(0, Math.min(leadership.length - 1, i)));
-  };
+  const rows: Leader[][] = [];
+  for (let i = 0; i < leadership.length; i += 2) rows.push(leadership.slice(i, i + 2));
   return (
     <PaletteScope value={paper}>
       <View style={{ backgroundColor: paper.bg, paddingTop: 56, paddingBottom: 48 }}>
@@ -39,22 +35,14 @@ export function Leadership({ index = '04' }: { index?: string }) {
           </Txt>
           <DoubleRule style={{ marginTop: 28 }} />
         </View>
-        <FlatList
-          data={leadership}
-          keyExtractor={(m) => m.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          snapToInterval={CARD_W + GAP}
-          decelerationRate="fast"
-          onScroll={onScroll}
-          scrollEventThrottle={32}
-          contentContainerStyle={{ paddingHorizontal: space.gutter, gap: GAP, paddingTop: 28 }}
-          renderItem={({ item, index: i }) => <PortraitCard member={item} delay={i * 70} />}
-          accessibilityLabel="Leadership team"
-        />
-        <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 24 }} aria-hidden>
-          {leadership.map((m, i) => (
-            <View key={m.id} style={{ width: i === page ? 22 : 6, height: 4, borderRadius: 2, backgroundColor: i === page ? paper.gold : paper.lineStrong }} />
+        <View style={{ paddingHorizontal: space.gutter, paddingTop: 28, gap: GAP }} accessibilityLabel="Leadership team">
+          {rows.map((row, r) => (
+            <View key={r} style={{ flexDirection: 'row', gap: GAP, alignItems: 'stretch' }}>
+              {row.map((m, c) => (
+                <PortraitCard key={m.id} member={m} number={r * 2 + c + 1} delay={(r * 2 + c) * 70} />
+              ))}
+              {row.length === 1 ? <View style={{ flex: 1 }} /> : null}
+            </View>
           ))}
         </View>
       </View>
@@ -62,11 +50,11 @@ export function Leadership({ index = '04' }: { index?: string }) {
   );
 }
 
-function PortraitCard({ member, delay }: { member: Leader; delay: number }) {
+function PortraitCard({ member, number, delay }: { member: Leader; number: number; delay: number }) {
   const c = useColors();
   return (
-    <Reveal delay={delay} style={{ width: CARD_W }}>
-      <View style={{ borderRadius: radius.lg, overflow: 'hidden', aspectRatio: 4 / 5, backgroundColor: '#e8e6df' }}>
+    <Reveal delay={delay} style={{ flex: 1, minWidth: 0 }}>
+      <View style={{ borderRadius: radius.lg, overflow: 'hidden', aspectRatio: 1, backgroundColor: '#e8e6df' }}>
         <Image
           source={member.photo}
           accessibilityLabel={altFor(member)}
@@ -82,13 +70,13 @@ function PortraitCard({ member, delay }: { member: Leader; delay: number }) {
           style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }}
         />
       </View>
-      <Txt variant="mono" tone="gold" style={{ marginTop: 18 }}>
+      <Txt variant="mono" tone="gold" style={{ marginTop: 12, fontSize: 10, lineHeight: 15 }}>
         {member.role}
       </Txt>
-      <Txt variant="h3" style={{ marginTop: 6 }}>
-        {member.name}
+      <Txt variant="h3" style={{ marginTop: 6, fontSize: 17, lineHeight: 22 }}>
+        {`${number}. ${member.name}`}
       </Txt>
-      <Txt variant="bodySm" tone="muted" style={{ marginTop: 10, fontSize: 14, lineHeight: 22 }}>
+      <Txt variant="bodySm" tone="muted" style={{ marginTop: 8, marginBottom: 14, fontSize: 12.5, lineHeight: 18 }}>
         {member.bio}
       </Txt>
       <Pressable
@@ -99,10 +87,10 @@ function PortraitCard({ member, delay }: { member: Leader; delay: number }) {
           Linking.openURL(member.linkedin).catch(() => {});
         }}
         style={({ pressed }) => ({
-          marginTop: 16,
+          marginTop: 'auto',
           alignSelf: 'flex-start',
-          minHeight: 42,
-          paddingHorizontal: 16,
+          minHeight: 40,
+          paddingHorizontal: 12,
           borderRadius: radius.pill,
           borderWidth: 1,
           borderColor: pressed ? c.fg : c.lineStrong,
@@ -116,7 +104,7 @@ function PortraitCard({ member, delay }: { member: Leader; delay: number }) {
           <>
             <LinkedinIcon size={14} color={pressed ? c.bg : c.fg} />
             <Txt variant="button" style={{ fontSize: 12, color: pressed ? c.bg : c.fg }}>
-              View LinkedIn profile
+              LinkedIn
             </Txt>
           </>
         )}

@@ -11,4 +11,4 @@ npm install
 npm start
 ```
 
-Set `PORT` to change the listening port. `CORS_ORIGINS` is a comma-separated allowlist for browser clients.
+Default port is 5001 (macOS uses 5000 for AirPlay). Set `PORT` to change the listening port. `CORS_ORIGINS` is a comma-separated allowlist for browser clients.
